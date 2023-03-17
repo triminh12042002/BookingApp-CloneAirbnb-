@@ -1,0 +1,5 @@
+note
+Tailwind css
+// in className: "grow" or "flex-1" has the same effect on making the div full fill the remain height of parent, remember in parent must use both flex and flex-col + h-screen
+
+
