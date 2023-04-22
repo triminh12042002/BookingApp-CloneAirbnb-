@@ -6,9 +6,14 @@ const bcrypt = require('bcryptjs');
 const User = require('./models/User');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-require('dotenv').config();
-const app = express();
+const imageDownloader = require('image-downloader');
+const multer = require('multer')
+const fs = require('fs')
 
+require('dotenv').config();
+
+
+const app = express();
 
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'thisisnotasecretkey';
@@ -17,10 +22,12 @@ const jwtSecret = 'thisisnotasecretkey';
 
 app.use(express.json());
 app.use(cookieParser());
+app.use('/uploads', express.static(__dirname + '/uploads'));
 // middleware
 app.use(cors({
     credentials: true,
-    origin: 'http://127.0.0.1:5174',
+    // origin: 'http://localhost:5173',
+    origin: 'http://127.0.0.1:5173',
     // origin: 'http://localhost:5174', 
     // can only have 1 origin
 }));
@@ -71,13 +78,15 @@ app.post('/login', async (req, res) => {
             }, jwtSecret, {}, (err, token) => {
                 if(err) throw err;
                 // res.cookie('token', token).json('pass ok');    
-                res.cookie('token', token, {secure: true, sameSite: 'none', }).json(userDoc);    
+                res.cookie('token', token).json(userDoc);    
+                // res.cookie('token', token, {secure: true, sameSite: 'none', }).json(userDoc);    
+                // res.cookie('token', token, {secure: false, sameSite: 'lax', }).json(userDoc);    
             });
         } else {
             res.status(422).json('incorrect');
         }
     } else {
-        res.json('not found');
+        res.json('can not find user');
     }
 
 })
@@ -95,4 +104,41 @@ app.get('/profile', (req, res) => {
     }
 })
 
+app.post('/logout', (req, res) => {
+    // reset token
+    res.cookie('token', '').json(true)
+})
+
+// console.log({__dirname});
+app.post('/upload-by-link', async (req,res) => {
+
+    const {link} = req.body;
+    const fileName = 'photo' + Date.now() + '.jpg'
+
+    const options = {
+        url: link,
+        dest: __dirname + '/uploads/' + fileName,
+    }
+    await imageDownloader.image(options);
+    res.json(fileName);
+})
+
+const upload = multer({dest: 'uploads/'}) // photosMiddleware
+app.post('/uploads', upload.array('photos', 100), (req, res) => {
+    console.log(req.files)
+    const uploadedFiles = [];
+    // console.log(req)
+    // the path of the img file after send from client computer to server has change, 
+    // also the extension is miss so can not open it
+    // but their still a originalname which have their extension
+    // so change the current path in the uploads folder to the correct file name
+    for(let i=0; i < req.files.length; ++i){
+        const {originalname, path} = req.files[i];
+        const newPath = 'uploads/' + originalname;
+        fs.renameSync(path, newPath);
+        uploadedFiles.push(originalname);
+    }
+    res.json(uploadedFiles)
+    // res.json(req.photos)
+} )
 app.listen(4000);

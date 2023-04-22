@@ -36,7 +36,7 @@ export default function LoginPage() {
                     <input type="password" placeholder="password" 
                         value={password} 
                         onChange={ev => {setPassword(ev.target.value)}} />
-                    <button className="login">Login</button>
+                    <button className="login primary">Login</button>
                     <div className="text-center py-2 text-gray-500">
                         Don't have an account yet? <Link className="underline" to={'/register'}>Register</Link>
                     </div>
