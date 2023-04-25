@@ -7,6 +7,7 @@ import IndexPage from './pages/IndexPage.jsx'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import { UserContextProvider } from './UserContext'
+import PlaceFormPage from './pages/PlaceFormPage'
 
 // cookie only store in 127.0.0.1 domain, both for client and server
 axios.defaults.baseURL = 'http://127.0.0.1:4000';
@@ -22,7 +23,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/account/:subpage?" element={<AccountPage />} />
-          <Route path="/account/:subpage/:action" element={<AccountPage />} />
+          <Route path="/account/places/new" element={<PlaceFormPage />} />
           {/* <Route path="/account/bookings" element={<AccountPage />} />
           <Route path="/account/places" element={<AccountPage />} /> */}
         </Route>
