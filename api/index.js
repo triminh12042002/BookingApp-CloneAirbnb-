@@ -4,12 +4,12 @@ const cors = require('cors');
 const { default: mongoose } = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('./models/User');
+const Place = require('./models/Place');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const imageDownloader = require('image-downloader');
 const multer = require('multer')
 const fs = require('fs')
-
 require('dotenv').config();
 
 
@@ -78,8 +78,8 @@ app.post('/login', async (req, res) => {
             }, jwtSecret, {}, (err, token) => {
                 if(err) throw err;
                 // res.cookie('token', token).json('pass ok');    
-                res.cookie('token', token).json(userDoc);    
-                // res.cookie('token', token, {secure: true, sameSite: 'none', }).json(userDoc);    
+                // res.cookie('token', token).json(userDoc);    
+                res.cookie('token', token, {secure: true, sameSite: 'none', }).json(userDoc);    
                 // res.cookie('token', token, {secure: false, sameSite: 'lax', }).json(userDoc);    
             });
         } else {
@@ -125,7 +125,7 @@ app.post('/upload-by-link', async (req,res) => {
 
 const upload = multer({dest: 'uploads/'}) // photosMiddleware
 app.post('/uploads', upload.array('photos', 100), (req, res) => {
-    console.log(req.files)
+    // console.log(req.files)
     const uploadedFiles = [];
     // console.log(req)
     // the path of the img file after send from client computer to server has change, 
@@ -141,4 +141,22 @@ app.post('/uploads', upload.array('photos', 100), (req, res) => {
     res.json(uploadedFiles)
     // res.json(req.photos)
 } )
+
+app.post('/places', (req,res) => {
+    const {token} = req.cookies;
+    const {title, address, addedPhotos,
+        description, perks, extraInfo,
+        checkInTime, checkOutTime, maxNumGuest
+    } = req.body;
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+        if (err) throw err;
+        const placeDoc = await Place.create({
+            owner: userData.id,
+            title, address, addedPhotos,
+            description, perks, extraInfo,
+            checkInTime, checkOutTime, maxNumGuest
+        })
+        res.json(placeDoc);
+    })
+})
 app.listen(4000);
