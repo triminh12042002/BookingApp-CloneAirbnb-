@@ -20,7 +20,7 @@ export default function PlacePage() {
     const [redirect, setRedirect] = useState(false);
     
     // let { subpage } = useParams();
-    console.log('action:');
+    console.log('action at begin:');
     console.log(action);
     
     async function addNewPlace(e){
@@ -32,22 +32,31 @@ export default function PlacePage() {
             description, perks, extraInfo,
             checkInTime, checkOutTime, maxNumGuest,
         }
-        const {data: responseData} = axios.post('/places', newPlaceData);
+        const {data: responseData} = await axios.post('/places', newPlaceData);
         console.log(responseData);
-        setAction('')
+        setAction('');
+        setRedirect(true);
+
 
         // setRedirect(true);
         // action = undefined;
         // return <Navigate to={'/account'} />
     }
-
     useEffect(() => {
-        if(action){
-            console.log('redirect');
-            console.log(redirect);
-            return <Navigate to={'/account/places'} />
+        if (redirect) {
+          setRedirect(false);
         }
-    },[]);
+      }, [redirect]);
+    
+    // useEffect(() => {
+    //     console.log("action");
+    //     console.log(action);
+    //     if(action){
+    //         console.log('redirect');
+    //         console.log(redirect);
+    //         setRedirect(true);
+    //     }
+    // },[action]);
     
     function handleSetAction(){
         setAction('new');
@@ -106,6 +115,9 @@ export default function PlacePage() {
 
                     </form>
                 </div>
+            )}
+            {redirect && (
+                <Navigate to={'/account/places'} />
             )}
         </div>
     )
