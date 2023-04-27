@@ -2,7 +2,7 @@ import axios from "axios";
 import { useContext } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { UserContext } from "../UserContext";
-import PlacePage from "./PlacePage";
+import UserPlacePage from "./UserPlacePage";
 import AccountNav from "../AccountNav";
 
 export default function AccountPage() {
@@ -50,7 +50,7 @@ export default function AccountPage() {
                     <button onClick={logout} className="bg-primary rounded-full px-4 py-2 text-white" >Logout</button>
                 </div>)}
             {subpage === 'places' && (
-                <PlacePage />
+                <UserPlacePage />
             )}
         </div>
     );

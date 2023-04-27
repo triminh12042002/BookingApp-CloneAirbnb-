@@ -146,17 +146,17 @@ app.post('/uploads', upload.array('photos', 100), (req, res) => {
 
 app.post('/places', (req, res) => {
     const { token } = req.cookies;
-    const { title, address, addedPhotos,
+    const { title, address, addedPhotos, price,
         description, perks, extraInfo,
         checkInTime, checkOutTime, maxNumGuest
     } = req.body;
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
         if (err) throw err;
         const placeDoc = await Place.create({
-            owner: userData.id,
+            owner: userData.id, price,
             title, address, photos: addedPhotos,
             description, perks, extraInfo,
-            checkIn: checkInTime, checkOut: checkOutTime, maxNumGuest
+            checkIn: checkInTime, checkOut: checkOutTime, maxGuest: maxNumGuest
         })
         res.json(placeDoc);
     })
@@ -169,6 +169,7 @@ app.post('/places', (req, res) => {
 //     console.log(error); // Failure
 // });
 
+// get all place of 1 user by their id
 app.get('/user-places', (req, res) => {
     const { token } = req.cookies;
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
@@ -178,27 +179,35 @@ app.get('/user-places', (req, res) => {
     });
 });
 
+// get a particular place infomation
 app.get('/places/:id', async (req, res) => {
     const { id } = req.params;
     res.json(await Place.findById(id));
 })
+
 app.put('/places/', async (req, res) => {
     const { token } = req.cookies;
-    const { id, title, address, addedPhotos,
+    const { id, title, address, addedPhotos, price,
         description, perks, extraInfo,
-        checkInTime, checkOutTime, maxNumGuest
+        checkInTime, checkOutTime, maxNumGuest,
     } = req.body;
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
         const placeDoc = await Place.findById(id);
         if (userData.id === placeDoc.owner.toString()) {
             placeDoc.set({
-                title, address, photos: addedPhotos,
+                title, address, photos: addedPhotos, price,
                 description, perks, extraInfo,
-                checkIn: checkInTime, checkOut: checkOutTime, maxNumGuest
+                checkIn: checkInTime, checkOut: checkOutTime, maxGuest: maxNumGuest
             });
             await placeDoc.save();
             res.json('ok');
         }
     });
+})
+
+// get all place
+app.get('/places', async (req, res) => {
+    const allPlaceData = await Place.find();
+    res.json(allPlaceData);
 })
 app.listen(4000);

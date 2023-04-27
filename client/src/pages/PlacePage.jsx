@@ -1,47 +1,88 @@
-import axios from 'axios'
+import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom"
-
+import { useParams } from "react-router-dom"
+import BookingWidget from "../BookingWidget";
 
 export default function PlacePage() {
-    const [places, setPlaces] = useState([]);
-
+    const { id } = useParams();
+    const [place, setPlace] = useState(null);
+    const [showAllPhotos, setShowAllPhotos] = useState(false);
+    // fetch place data
     useEffect(() => {
-        axios.get('/user-places').then(({ data }) => {
-            console.log('data');
-            console.log(data);
-            setPlaces(data);
-        });
-    }, []) // [] -> run only after render component, not run on updating
+        if (!id)
+            return;
+        axios.get(`/places/${id}`).then(res => {
+            console.log(res);
+            setPlace(res.data);
+        })
+    }, []);
+    if (!place)
+        return '';
 
-    return (
-        <div>
-            <div className="text-center my-2 ">
-                List all places
-                <br />
-                <Link className='inline-flex bg-primary text-white py-2 px-4 rounded-full' to={'/account/places/new'} >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    Add new place
-                </Link>
+    if (showAllPhotos) {
+        return (
+            <div className="absolute bg-black inset-0 bg-white min-h-screen">
+                <div className=" bg-black grid gap-4 p-8">
+                    <div>
+                        <h2 className="text-3xl text-white">{place.title}</h2>
+                        <button onClick={() => setShowAllPhotos(false)} className="fixed top-8 right-12 p-2 flex shadow shadow-black rounded-2xl">Close photos</button>
+                    </div>
+                    {place.photos?.length > 0 && place.photos.map(photo => (
+                        <div key={photo}>
+                            <img src={'http://127.0.0.1:4000/uploads/' + photo} />
+                        </div>
+                    ))}
+                </div>
             </div>
-            <div>
-                {places.length > 0 && places.map(place => (
-                    <Link to={'/account/places/' + place._id } key={place.title} className='cursor-pointer flex gap-4 bg-gray-200 p-2 m-2 mt-4 rounded-2xl'>
-                        <div className='w-32 h-32 flex bg-gray-300 shrink-0'>
-                            {place.photos?.[0] && (
-                                <img  className='rounded-2xl w-full object-cover' key={place.photos[0]} src={'http://127.0.0.1:4000/uploads/' + place.photos[0]} alt='' />
+        )
+    }
+    return (
+        <div className="'mt-4 bg-gray-100 -mx-8 p-8">
+            <h1 className="text-3xl">{place.title}</h1>
+            <a className="block underline mb-2" target='_blank' href={"https://www.google.com/?g=" + place.address} >{place.address}</a>
+            <div className="relative">
+                <div className="grid gap-2 grid-cols-[2fr_1fr] rounded-3xl overflow-hidden">
+                    <div >
+                        {place.photos?.[0] && (
+                            <img onClick={() => setShowAllPhotos(true)} className=" aspect-square cursor-pointer object-cover" src={'http://127.0.0.1:4000/uploads/' + place.photos[0]} />
+                        )}
+                    </div>
+                    <div className="grid ">
+                        {place.photos?.[1] && (
+                            <img onClick={() => setShowAllPhotos(true)} className="aspect-square  cursor-pointerobject-cover" src={'http://127.0.0.1:4000/uploads/' + place.photos[1]} />
+                        )}
+                        <div className="overflow-hidden ">
+                            {place.photos?.[2] && (
+                                <img onClick={() => setShowAllPhotos(true)} className="aspect-square  cursor-pointerobject-cover relative top-2" src={'http://127.0.0.1:4000/uploads/' + place.photos[2]} />
                             )}
                         </div>
-                        <div>
-                            <h2>{place.title}</h2>
-                            <p>{place.description}</p>
-                        </div>
-                    </Link>
-                ))}
-            </div>
-        </div>
 
+                    </div>
+                    <button onClick={() => setShowAllPhotos(true)} className="absolute bottom-2 right-2 px-2 py-4 bg-white rounded-2xl">
+                        Show more image
+                    </button>
+                </div>
+            </div>
+
+            <div className="mt-6 gap-8 grid grid-cols-1s md:grid-cols-[2fr_1fr]">
+                <div>
+                    <h2 className="font-semibold text-2xl">Description</h2>
+                    <div className="my-4">
+                        {place.description}
+                    </div>
+                    Check-in: {place.checkIn} <br />
+                    Check-out: {place.checkOut} <br />
+                    Max number of guest: {place.maxGuest}
+                </div>
+                <div>
+                    <BookingWidget place={place} setPlace={setPlace} />
+                </div>
+            </div>
+            <div className="bg-white -mx-8 px-8 py-8 pt-8 mt-8">
+                <h2 className="font-semibold text-2xl">Extra info</h2>
+                <div className="mt-1 mb-4 text-sm text-gray-700 leading-4" >{place.extraInfo}</div>
+            </div>
+
+        </div>
     )
 }

@@ -16,6 +16,7 @@ export default function PlaceFormPage() {
     const [checkInTime, setCheckInTime] = useState('');
     const [checkOutTime, setCheckOutTime] = useState('');
     const [maxNumGuest, setMaxNumGuest] = useState(1);
+    const [price, setPrice] = useState(100);
     const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
@@ -30,9 +31,10 @@ export default function PlaceFormPage() {
             setDescription(data.description);
             setPerks(data.perks);
             setExtraInfo(data.extraInfo);
-            setCheckInTime(data.checkInTime);
-            setCheckOutTime(data.checkOutTime);
-            setMaxNumGuest(data.maxNumGuest);
+            setCheckInTime(data.checkIn);
+            setCheckOutTime(data.checkOut);
+            setMaxNumGuest(data.maxGuest);
+            setPrice(data.price);
         })
     }, [id]);
 
@@ -41,9 +43,9 @@ export default function PlaceFormPage() {
         // console.log('addedPhotos');
         // console.log(addedPhotos);
         const newPlaceData = {
-            title, address, addedPhotos,
+            title, address, addedPhotos, price,
             description, perks, extraInfo,
-            checkInTime, checkOutTime, maxNumGuest,
+            checkInTime, checkOutTime, maxNumGuest, 
         }
         if (id) {
             // update
@@ -90,7 +92,7 @@ export default function PlaceFormPage() {
                 <textarea value={extraInfo} onChange={ev => setExtraInfo(ev.target.value)} />
                 <h2 className="text-2xl mt-4">Check in&out time</h2>
                 <p className="text-gray-300">add check in and check out time</p>
-                <div className=" grid grid-cols-3 gap-2">
+                <div className=" grid md:grid-cols-4 sm:grid-cols-3 gap-2">
                     <div>
                         <h3 className="mt-2 -mb-1">Check in time</h3>
                         <input type="text" value={checkInTime} onChange={ev => setCheckInTime(ev.target.value)} placeholder="12:04" />
@@ -102,6 +104,10 @@ export default function PlaceFormPage() {
                     <div>
                         <h3 className="mt-2 -mb-1">Max number of guests</h3>
                         <input type="number" value={maxNumGuest} onChange={ev => setMaxNumGuest(ev.target.value)} placeholder="2" />
+                    </div>
+                    <div>
+                        <h3 className="mt-2 -mb-1">Price</h3>
+                        <input type="number" value={price} onChange={ev => setPrice(ev.target.value)} placeholder="100" />
                     </div>
                 </div>
                 <button className="primary">Save</button>
