@@ -27,11 +27,7 @@ export default function PlacePage() {
                         <h2 className="text-3xl text-white">{place.title}</h2>
                         <button onClick={() => setShowAllPhotos(false)} className="fixed top-8 right-12 p-2 flex shadow shadow-black rounded-2xl">Close photos</button>
                     </div>
-                    {place.photos?.length > 0 && place.photos.map(photo => (
-                        <div key={photo}>
-                            <img src={'http://127.0.0.1:4000/uploads/' + photo} />
-                        </div>
-                    ))}
+                    
                 </div>
             </div>
         )

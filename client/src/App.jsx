@@ -9,6 +9,8 @@ import RegisterPage from './pages/RegisterPage'
 import { UserContextProvider } from './UserContext'
 import PlaceFormPage from './pages/PlaceFormPage'
 import PlacePage from './pages/PlacePage'
+import BookingsPage from './pages/BookingsPage'
+import BookingPage from './pages/BookingPage'
 
 // cookie only store in 127.0.0.1 domain, both for client and server
 axios.defaults.baseURL = 'http://127.0.0.1:4000';
@@ -29,6 +31,8 @@ function App() {
           <Route path="/account/places" element={<AccountPage />} /> */}
           <Route path="/account/places/:id" element={<PlaceFormPage />} />
           <Route path="/place/:id" element={<PlacePage />} />
+          <Route path="/account/bookings" element={<BookingsPage/>} />
+          <Route path="/account/bookings/:id" element={<BookingPage/>} />
         </Route>
       </Routes>
     </UserContextProvider>
