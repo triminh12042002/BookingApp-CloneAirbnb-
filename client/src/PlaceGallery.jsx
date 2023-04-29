@@ -31,11 +31,11 @@ export default function PlaceGallery({ place }) {
                 </div>
                 <div className="grid ">
                     {place.photos?.[1] && (
-                        <img onClick={() => setShowAllPhotos(true)} className="aspect-square  cursor-pointerobject-cover" src={'http://127.0.0.1:4000/uploads/' + place.photos[1]} />
+                        <img onClick={() => setShowAllPhotos(true)} className="aspect-square  cursor-pointer object-cover" src={'http://127.0.0.1:4000/uploads/' + place.photos[1]} />
                     )}
                     <div className="overflow-hidden ">
                         {place.photos?.[2] && (
-                            <img onClick={() => setShowAllPhotos(true)} className="aspect-square  cursor-pointerobject-cover relative top-2" src={'http://127.0.0.1:4000/uploads/' + place.photos[2]} />
+                            <img onClick={() => setShowAllPhotos(true)} className="aspect-square  cursor-pointer object-cover relative top-2" src={'http://127.0.0.1:4000/uploads/' + place.photos[2]} />
                         )}
                     </div>
 

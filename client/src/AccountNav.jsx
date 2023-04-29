@@ -1,9 +1,11 @@
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 
 export default function AccountNav(){
-    let { subpage, action } = useParams();
+    let { pathname } = useLocation();
+    let path = pathname.split('/');
+    // console.log(path);
+    let subpage = path[2];
     // console.log(subpage);
-
     if (subpage === undefined) {
         subpage = 'profile';
     }

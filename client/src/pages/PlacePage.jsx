@@ -20,9 +20,8 @@ export default function PlacePage() {
     if (!place)
         return '';
 
-    
     return (
-        <div className="'mt-4 bg-gray-100 -mx-8 p-8">
+        <div className="'mt-4 bg-gray-100 -mx-8 py-4 px-8 flex flex-col min-h-screen max-w-5xl mx-auto">
             <h1 className="text-3xl">{place.title}</h1>
             <AddressLink >{place.address}</AddressLink>
             <PlaceGallery place={place} />

@@ -17,7 +17,6 @@ export default function UserPlacePage() {
     return (
         <div>
             <div className="text-center my-2 ">
-                List all places
                 <br />
                 <Link className='inline-flex bg-primary text-white py-2 px-4 rounded-full' to={'/account/places/new'} >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
